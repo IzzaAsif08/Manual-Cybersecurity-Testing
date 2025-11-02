@@ -79,17 +79,21 @@ except Exception as e:
 
 # Log actions with timezone-aware timestamps
 def log_action(username, action):
-    logs.insert_one({"user": username, "action": action, "timestamp": datetime.now(timezone.utc)})
+    logs.insert_one({
+        "user": username,
+        "action": action,
+        "timestamp": datetime.now(timezone.utc)
+    })
 
 # Password validation
 def is_strong_password(password):
-    if (len(password) < 8 or
-        not re.search(r"[A-Z]", password) or
-        not re.search(r"[a-z]", password) or
-        not re.search(r"[0-9]", password) or
-        not re.search(r"[!@#$%^&*(),.?\":{}|<>]", password)):
-        return False
-    return True
+    return (
+        len(password) >= 8 and
+        re.search(r"[A-Z]", password) and
+        re.search(r"[a-z]", password) and
+        re.search(r"[0-9]", password) and
+        re.search(r"[!@#$%^&*(),.?\":{}|<>]", password)
+    )
 
 # Encryption/Decryption
 def encrypt_data(text):
