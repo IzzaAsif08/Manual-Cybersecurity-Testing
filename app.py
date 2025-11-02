@@ -1,55 +1,54 @@
 import streamlit as st
 from pymongo import MongoClient
-from datetime import datetime, timezone
+from datetime import datetime, UTC
 import os, re, bcrypt, base64, pandas as pd
 
-# App UI setup
+# --------------------------------------------------
+# 🌸 STREAMLIT UI SETUP
+# --------------------------------------------------
 st.set_page_config(page_title="💸 FinTech Luxe", layout="centered")
 
 st.markdown("""
     <style>
         body {background-color: #fff0f5;}
         .stApp {background-color: #ffe6f2;}
-        h1, h2, h3, label, p, span, div {color: #d63384 !important;}
+        h1, h2, h3, label, p, span, div {color: #b30059 !important;}
 
         /* Sidebar */
         div[data-testid="stSidebar"] {
             background-color: #ffb6c1;
-            color: white;
+            color: #4a004a;
         }
 
         /* Buttons */
         .stButton>button {
             background-color: #d63384;
-            color: white;
+            color: white !important;
             border-radius: 10px;
             font-weight: bold;
         }
         .stButton>button:hover {
             background-color: #ff4081;
-            color: white;
+            color: white !important;
         }
 
-        /* Inputs & borders */
+        /* Inputs */
         input, textarea {
             border: 1px solid #ff99cc !important;
         }
 
-        /* Uploader text & file icons */
+        /* File uploader */
         [data-testid="stFileUploader"] * {
             color: #6a0dad !important;
         }
-
         [data-testid="stFileUploader"] label {
             color: #b30059 !important;
             font-weight: 600;
         }
-
         [data-testid="stFileUploader"] section {
             background-color: #fff5f8 !important;
             border: 2px dashed #ff66b2 !important;
         }
-
         .uploadedFile, .uploadError, .uploadWarning {
             color: #b30059 !important;
         }
@@ -58,7 +57,9 @@ st.markdown("""
 
 st.title("💸 FinTech Luxe App")
 
-# MongoDB Connection
+# --------------------------------------------------
+# ⚙️ MONGODB CONNECTION
+# --------------------------------------------------
 MONGO_URI = (
     st.secrets.get("MONGODB_URI")
     if "MONGODB_URI" in st.secrets
@@ -69,7 +70,7 @@ MONGO_URI = (
 )
 
 try:
-    client = MongoClient(MONGO_URI)
+    client = MongoClient(MONGO_URI, tls=True, tlsAllowInvalidCertificates=True)
     db = client["fintech_db"]
     users = db["users"]
     logs = db["logs"]
@@ -77,15 +78,22 @@ try:
 except Exception as e:
     st.sidebar.error(f"❌ MongoDB Connection Failed: {e}")
 
-# Log actions with timezone-aware timestamps
+# --------------------------------------------------
+# 🕒 LOG ACTIONS (UTC timezone fixed)
+# --------------------------------------------------
 def log_action(username, action):
-    logs.insert_one({
-        "user": username,
-        "action": action,
-        "timestamp": datetime.now(timezone.utc)
-    })
+    try:
+        logs.insert_one({
+            "user": username,
+            "action": action,
+            "timestamp": datetime.now(UTC)
+        })
+    except Exception as e:
+        st.error(f"Logging error: {e}")
 
-# Password validation
+# --------------------------------------------------
+# 🔐 PASSWORD VALIDATION
+# --------------------------------------------------
 def is_strong_password(password):
     return (
         len(password) >= 8 and
@@ -95,7 +103,9 @@ def is_strong_password(password):
         re.search(r"[!@#$%^&*(),.?\":{}|<>]", password)
     )
 
-# Encryption/Decryption
+# --------------------------------------------------
+# 🔒 ENCRYPTION / DECRYPTION
+# --------------------------------------------------
 def encrypt_data(text):
     return base64.b64encode(text.encode()).decode()
 
@@ -103,9 +113,11 @@ def decrypt_data(text):
     try:
         return base64.b64decode(text.encode()).decode()
     except Exception:
-        return "Decryption Error"
+        return "⚠️ Decryption Error"
 
-# Authentication Section
+# --------------------------------------------------
+# 👥 AUTHENTICATION
+# --------------------------------------------------
 st.header("🔐 Secure User Authentication")
 menu = st.radio("Select Option", ["Register", "Login"])
 
@@ -117,7 +129,7 @@ if menu == "Register":
 
     if st.button("Register"):
         if not username or not password:
-            st.warning("⚠️ All fields required.")
+            st.warning("⚠️ All fields are required.")
         elif users.find_one({"username": username}):
             st.warning("⚠️ Username already exists.")
         elif password != confirm_password:
@@ -129,7 +141,7 @@ if menu == "Register":
             users.insert_one({
                 "username": username,
                 "password": hashed_pw,
-                "created_at": datetime.now(timezone.utc)
+                "created_at": datetime.now(UTC)
             })
             log_action(username, "User Registered")
             st.success("✅ Registration successful! You can now login.")
@@ -149,11 +161,13 @@ elif menu == "Login":
             st.error("❌ Invalid credentials.")
             log_action(username, "Failed Login Attempt")
 
-# User Dashboard
+# --------------------------------------------------
+# 🏠 DASHBOARD
+# --------------------------------------------------
 if "user" in st.session_state:
     username = st.session_state["user"]
     st.header(f"👤 Welcome, {username}")
-    
+
     uploaded_file = st.file_uploader("📁 Upload Proof of Payment (JPG/PNG only)", type=["jpg", "jpeg", "png"])
     if uploaded_file:
         st.success("✅ File uploaded successfully!")
@@ -165,6 +179,7 @@ if "user" in st.session_state:
         encrypted = encrypt_data(text_to_encrypt)
         st.code(encrypted)
         log_action(username, "Encrypted Data")
+
     encrypted_input = st.text_input("Enter encrypted text to decrypt:")
     if st.button("Decrypt"):
         decrypted = decrypt_data(encrypted_input)
@@ -186,7 +201,9 @@ if "user" in st.session_state:
         st.success("👋 Logged out successfully.")
         log_action(username, "User Logged Out")
 
-# Cybersecurity Test Plan Table
+# --------------------------------------------------
+# 🧠 CYBERSECURITY TEST TABLE
+# --------------------------------------------------
 with st.expander("🧠 Manual Cybersecurity Test Plan"):
     test_data = [
         ["1", "Input Validation – SQL Injection", "Entered 'OR 1=1--", "Input rejected / error handled", "Error handled properly", "✅ Pass"],
