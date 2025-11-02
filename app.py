@@ -5,8 +5,8 @@ import os, re, bcrypt, base64, pandas as pd
 
 KEY_FILE = "secret.key"
 LOCKOUT_LIMIT = 5
-LOCKOUT_TIME = 300   # seconds (5 minutes)
-SESSION_TIMEOUT = 5 # seconds (10 minutes)
+LOCKOUT_TIME = 300  
+SESSION_TIMEOUT = 5 
 
 
 
@@ -223,5 +223,6 @@ with st.expander("🧠 Manual Cybersecurity Test Plan"):
 
 st.markdown("---")
 st.caption("💗 Developed By — IZZA ASIF BALOCH")
+
 
 
