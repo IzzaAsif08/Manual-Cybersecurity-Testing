@@ -3,12 +3,9 @@ from pymongo import MongoClient
 from datetime import datetime
 import os, re, bcrypt, base64, pandas as pd
 
-# ================================
-#  APP CONFIGURATION
-# ================================
+
 st.set_page_config(page_title="💸 FinTech Luxe", layout="centered")
 
-# --- PINK THEME (Custom CSS) ---
 st.markdown("""
     <style>
         body {background-color: #fff0f5;}
@@ -61,11 +58,9 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 st.title("💸 FinTech Luxe App")
-st.caption("Secure FinTech Application with MongoDB Atlas, Pink Theme, and Manual Cybersecurity Tests")
 
-# ================================
-#  MONGO CONNECTION
-# ================================
+
+
 MONGO_URI = (
     st.secrets.get("MONGODB_URI")
     if "MONGODB_URI" in st.secrets
@@ -84,9 +79,7 @@ try:
 except Exception as e:
     st.sidebar.error(f"❌ MongoDB Connection Failed: {e}")
 
-# ================================
-#  UTILITY FUNCTIONS
-# ================================
+
 def log_action(username, action):
     """Log user actions for auditing."""
     logs.insert_one({"user": username, "action": action, "timestamp": datetime.utcnow()})
@@ -110,9 +103,7 @@ def decrypt_data(text):
     except Exception:
         return "Decryption Error"
 
-# ================================
-#  AUTHENTICATION
-# ================================
+
 st.header("🔐 Secure User Authentication")
 menu = st.radio("Select Option", ["Register", "Login"])
 
@@ -152,20 +143,18 @@ elif menu == "Login":
             st.error("❌ Invalid credentials.")
             log_action(username, "Failed Login Attempt")
 
-# ================================
-#  USER DASHBOARD
-# ================================
+
 if "user" in st.session_state:
     username = st.session_state["user"]
     st.header(f"👤 Welcome, {username}")
     
-    # --- File Upload Validation ---
+    
     uploaded_file = st.file_uploader("📁 Upload Proof of Payment (JPG/PNG only)", type=["jpg", "jpeg", "png"])
     if uploaded_file:
         st.success("✅ File uploaded successfully!")
         log_action(username, "Uploaded File")
 
-    # --- Encryption / Decryption ---
+    
     st.subheader("🔐 Data Encryption / Decryption")
     text_to_encrypt = st.text_input("Enter text to encrypt:")
     if st.button("Encrypt"):
@@ -178,7 +167,7 @@ if "user" in st.session_state:
         st.code(decrypted)
         log_action(username, "Decrypted Data")
 
-    # --- Profile Update ---
+    
     st.subheader("🧾 Profile Update")
     new_username = st.text_input("Change Username:")
     if st.button("Update Profile"):
@@ -189,15 +178,14 @@ if "user" in st.session_state:
         else:
             st.warning("⚠️ Username cannot be empty.")
 
-    # --- Logout ---
+    
     if st.button("Logout"):
         st.session_state.pop("user")
         st.success("👋 Logged out successfully.")
         log_action(username, "User Logged Out")
 
-# ================================
-#  CYBERSECURITY TEST PLAN TABLE
-# ================================
+
+
 with st.expander("🧠 Manual Cybersecurity Test Plan"):
     test_data = [
         ["1", "Input Validation – SQL Injection", "Entered 'OR 1=1--", "Input rejected / error handled", "Error handled properly", "✅ Pass"],
@@ -224,9 +212,8 @@ with st.expander("🧠 Manual Cybersecurity Test Plan"):
     df = pd.DataFrame(test_data, columns=["#", "Test Case", "Action", "Expected Outcome", "Observed Result", "Status"])
     st.dataframe(df, use_container_width=True)
 
-# ================================
-#  FOOTER
-# ================================
+
 st.markdown("---")
-st.caption("💗 Developed securely with care — FinTech Luxe by Abdul Samad")
+st.caption("💗 Developed By — IZZA ASIF BALOCH")
+
 
