@@ -13,8 +13,15 @@ st.markdown("""
     <style>
         body {background-color: #fff0f5;}
         .stApp {background-color: #ffe6f2;}
-        h1, h2, h3, label, p {color: #d63384 !important;}
-        div[data-testid="stSidebar"] {background-color: #ffb6c1; color: white;}
+        h1, h2, h3, label, p, span, div {color: #d63384 !important;}
+
+        /* Sidebar */
+        div[data-testid="stSidebar"] {
+            background-color: #ffb6c1;
+            color: white;
+        }
+
+        /* Buttons */
         .stButton>button {
             background-color: #d63384;
             color: white;
@@ -25,12 +32,34 @@ st.markdown("""
             background-color: #ff4081;
             color: white;
         }
+
+        /* Inputs & borders */
         input, textarea {
             border: 1px solid #ff99cc !important;
         }
+
+        /* Uploader text & file icons */
+        [data-testid="stFileUploader"] * {
+            color: #6a0dad !important;  /* Deep purple text for contrast */
+        }
+
+        [data-testid="stFileUploader"] label {
+            color: #b30059 !important; /* Visible pink label */
+            font-weight: 600;
+        }
+
+        /* Make the upload box slightly lighter for contrast */
+        [data-testid="stFileUploader"] section {
+            background-color: #fff5f8 !important;
+            border: 2px dashed #ff66b2 !important;
+        }
+
+        /* Error/warning text inside uploader */
+        .uploadedFile, .uploadError, .uploadWarning {
+            color: #b30059 !important;
+        }
     </style>
 """, unsafe_allow_html=True)
-
 st.title("💸 FinTech Luxe App")
 st.caption("Secure FinTech Application with MongoDB Atlas, Pink Theme, and Manual Cybersecurity Tests")
 
@@ -200,3 +229,4 @@ with st.expander("🧠 Manual Cybersecurity Test Plan"):
 # ================================
 st.markdown("---")
 st.caption("💗 Developed securely with care — FinTech Luxe by Abdul Samad")
+
