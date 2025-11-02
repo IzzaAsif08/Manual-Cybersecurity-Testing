@@ -3,6 +3,13 @@ from pymongo import MongoClient
 from datetime import datetime, UTC
 import os, re, bcrypt, base64, pandas as pd
 
+KEY_FILE = "secret.key"
+LOCKOUT_LIMIT = 5
+LOCKOUT_TIME = 300   # seconds (5 minutes)
+SESSION_TIMEOUT = 5 # seconds (10 minutes)
+
+
+
 
 st.set_page_config(page_title="💸 FinTech Luxe", layout="centered")
 
@@ -216,4 +223,5 @@ with st.expander("🧠 Manual Cybersecurity Test Plan"):
 
 st.markdown("---")
 st.caption("💗 Developed By — IZZA ASIF BALOCH")
+
 
