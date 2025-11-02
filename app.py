@@ -3,9 +3,7 @@ from pymongo import MongoClient
 from datetime import datetime, UTC
 import os, re, bcrypt, base64, pandas as pd
 
-# --------------------------------------------------
-# 🌸 STREAMLIT UI SETUP
-# --------------------------------------------------
+
 st.set_page_config(page_title="💸 FinTech Luxe", layout="centered")
 
 st.markdown("""
@@ -57,9 +55,7 @@ st.markdown("""
 
 st.title("💸 FinTech Luxe App")
 
-# --------------------------------------------------
-# ⚙️ MONGODB CONNECTION
-# --------------------------------------------------
+
 MONGO_URI = (
     st.secrets.get("MONGODB_URI")
     if "MONGODB_URI" in st.secrets
@@ -78,9 +74,7 @@ try:
 except Exception as e:
     st.sidebar.error(f"❌ MongoDB Connection Failed: {e}")
 
-# --------------------------------------------------
-# 🕒 LOG ACTIONS (UTC timezone fixed)
-# --------------------------------------------------
+
 def log_action(username, action):
     try:
         logs.insert_one({
@@ -91,9 +85,7 @@ def log_action(username, action):
     except Exception as e:
         st.error(f"Logging error: {e}")
 
-# --------------------------------------------------
-# 🔐 PASSWORD VALIDATION
-# --------------------------------------------------
+
 def is_strong_password(password):
     return (
         len(password) >= 8 and
@@ -103,9 +95,7 @@ def is_strong_password(password):
         re.search(r"[!@#$%^&*(),.?\":{}|<>]", password)
     )
 
-# --------------------------------------------------
-# 🔒 ENCRYPTION / DECRYPTION
-# --------------------------------------------------
+
 def encrypt_data(text):
     return base64.b64encode(text.encode()).decode()
 
@@ -115,9 +105,7 @@ def decrypt_data(text):
     except Exception:
         return "⚠️ Decryption Error"
 
-# --------------------------------------------------
-# 👥 AUTHENTICATION
-# --------------------------------------------------
+
 st.header("🔐 Secure User Authentication")
 menu = st.radio("Select Option", ["Register", "Login"])
 
@@ -161,9 +149,7 @@ elif menu == "Login":
             st.error("❌ Invalid credentials.")
             log_action(username, "Failed Login Attempt")
 
-# --------------------------------------------------
-# 🏠 DASHBOARD
-# --------------------------------------------------
+
 if "user" in st.session_state:
     username = st.session_state["user"]
     st.header(f"👤 Welcome, {username}")
@@ -201,9 +187,7 @@ if "user" in st.session_state:
         st.success("👋 Logged out successfully.")
         log_action(username, "User Logged Out")
 
-# --------------------------------------------------
-# 🧠 CYBERSECURITY TEST TABLE
-# --------------------------------------------------
+
 with st.expander("🧠 Manual Cybersecurity Test Plan"):
     test_data = [
         ["1", "Input Validation – SQL Injection", "Entered 'OR 1=1--", "Input rejected / error handled", "Error handled properly", "✅ Pass"],
@@ -232,3 +216,4 @@ with st.expander("🧠 Manual Cybersecurity Test Plan"):
 
 st.markdown("---")
 st.caption("💗 Developed By — IZZA ASIF BALOCH")
+
