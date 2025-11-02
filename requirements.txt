@@ -1,10 +1,22 @@
+# Core Framework
 streamlit==1.39.0
+
+# Database
 pymongo==4.8.0
-bcrypt==4.2.0
-cryptography==43.0.3
-python-dotenv==1.0.1
 dnspython==2.6.1
+
+# Environment Variables
+python-dotenv==1.0.1
+
+# Data Handling
 pandas==2.2.3
 numpy==1.26.4
-tenacity==9.1.2
+
+# Utility Packages
 watchdog==5.0.3
+tenacity==9.1.2
+rich==13.9.4
+
+# Optional – Only if you’re using encryption, forms, etc.
+bcrypt==4.1.2
+requests==2.32.3
